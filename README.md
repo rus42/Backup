@@ -151,3 +151,53 @@ Messages {
 }
 ```
 ![alt text](https://github.com/rus42/Backup/blob/main/Task_2.png)
+
+## Задание 3
+### Установите программное обеспечении Rsync. Настройте синхронизацию на двух нодах. Протестируйте работу сервиса.
+
+rsyncd.conf
+```java
+pid file = /var/run/rsyncd.pid
+log file = /var/log/rsyncd.log
+transfer logging = true
+munge symlinks = yes
+
+[data]
+path = /data
+uid = root
+read only = yes
+list = yes
+comment = Data backup Dir
+auth users = backup
+secrets file = /etc/rsyncd.scrt
+```
+
+rsyncd.scrt
+```java
+backup:12345
+```
+
+backup-server1.sh
+```java
+#!/bin/bash
+date
+syst_dir=/backup/
+srv_name=netology
+srv_ip=10.0.0.2
+srv_user=backup
+srv_dir=data
+echo "Start backup ${srv_name}"
+mkdir -p ${syst_dir}${srv_name}/increment/
+/usr/bin/rsync -avz --progress --delete --password-file=/etc/rsyncd.scrt ${srv_user}@${srv_ip}::${srv_dir} ${syst_dir}>
+/usr/bin/find ${syst_dir}${srv_name}/increment/ -maxdepth 1 -type d -mtime +30 -exec rm -rf {} \;
+date
+echo "Finish backup ${srv_name}"
+```
+
+![alt text](https://github.com/rus42/Backup/blob/main/Task_3.1.png)
+
+![alt text](https://github.com/rus42/Backup/blob/main/Task_3.2.png)
+
+
+
+
