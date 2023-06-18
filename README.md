@@ -150,3 +150,4 @@ Messages {
   director = netology-dir = all, !skipped, !restored
 }
 ```
+![alt text](https://github.com/rus42/Backup/blob/main/Task_2.png)
